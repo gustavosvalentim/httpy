@@ -1,0 +1,8 @@
+name: PostmanEcho
+base_url: https://postman-echo.com
+requests:
+  get_request:
+    endpoint: get
+    method: get
+    query:
+      foo: bar
