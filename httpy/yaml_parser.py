@@ -1,7 +1,9 @@
 from os import path
 
 import yaml
-from yaml.loader import SafeLoader
+from yaml.loader import FullLoader
+
+from httpy.environment.yaml_constructor import environment_yaml_constructor
 
 
 class YAMLParser:
@@ -9,10 +11,11 @@ class YAMLParser:
         if not path.isfile(yaml_file_path):
             raise FileNotFoundError('File %s not found' % yaml_file_path)
 
-        with open(yaml_file_path) as _buf:
-            yaml_content = _buf.read()
+        _f = open(yaml_file_path)
+        yaml.add_constructor(u'!env', environment_yaml_constructor)
+        self.parse_yaml = yaml.load(_f, Loader=FullLoader)
 
-        self.parse_yaml = yaml.load(yaml_content, SafeLoader)
+        _f.close()
 
     def __getattr__(self, attr):
         if attr not in self.parse_yaml:

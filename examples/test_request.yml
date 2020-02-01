@@ -6,3 +6,11 @@ requests:
     method: get
     query:
       foo: bar
+    headers:
+      bar: foo
+
+  response_headers:
+    endpoint: !env endpoint
+    method: get
+    headers:
+      foo: bar

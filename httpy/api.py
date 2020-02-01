@@ -1,4 +1,7 @@
+from requests import Session
+
 from httpy.request import Request
+from httpy.environment import Environment
 
 
 class Api:
@@ -9,11 +12,13 @@ class Api:
         :param _o:
         :type _o: YAMLParser
         """
+        self.session = Session()
         self.name = _o.name
         self.base_url = _o.base_url
         self.raw_requests = _o.requests
         self.requests = {}
         self.__load()
+        self.environment = None
 
     def __getattr__(self, attr):
         """
@@ -35,4 +40,10 @@ class Api:
         Load the raw requests and set them as Request object in Api.requests dict
         """
         for k, v in self.raw_requests.items():
-            self.requests[k] = Request(self.base_url, v)
+            self.requests[k] = Request(self.base_url, k, v, self.session)
+
+    def attach_environment(self, env):
+        if type(env) != Environment:
+            raise TypeError('Parameter env in Api.attach_environment must be of type Environment not %s' % type(env))
+    
+        self.environment = env
